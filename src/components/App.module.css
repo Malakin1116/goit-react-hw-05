@@ -1,0 +1,30 @@
+.ul {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+
+.container {
+  display: flex;
+
+}
+
+.link {
+  list-style-type: none;
+  text-decoration: none;
+  color: rgb(7, 70, 7); 
+}
+
+.link:visited {
+  color: rgb(7, 70, 7); 
+}
+
+.isActive {
+  color: orangered; 
+}
+
+.link:hover {
+  color: orangered; 
+}
+
