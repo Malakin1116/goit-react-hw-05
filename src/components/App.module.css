@@ -6,25 +6,7 @@
 
 
 .container {
+  width: 100%;
   display: flex;
-
+  flex-direction: column;
 }
-
-.link {
-  list-style-type: none;
-  text-decoration: none;
-  color: rgb(7, 70, 7); 
-}
-
-.link:visited {
-  color: rgb(7, 70, 7); 
-}
-
-.isActive {
-  color: orangered; 
-}
-
-.link:hover {
-  color: orangered; 
-}
-
