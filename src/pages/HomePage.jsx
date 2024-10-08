@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { fetchDetails } from "../moviesApi"; 
-// import { Link } from "react-router-dom";
+import { fetchMovies } from "../moviesApi"; 
+
+
+import { Link, useLocation } from "react-router-dom";
 
 export default function HomePage() {
   const [trending, setTrending] = useState([]);
@@ -8,11 +10,9 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const movies = await fetchDetails(); 
+        const movies = await fetchMovies(); 
         setTrending(movies.results); 
-
-        console.log(movies.results);
-
+        console.log(movies.results)
       } catch (error) {
         console.error("Error fetching trending movies:", error);
       }
@@ -21,20 +21,22 @@ export default function HomePage() {
     fetchData();
   }, []);
 
+  const location = useLocation();
+
   return (
     <div>
       <h1>Trending today</h1>
       <ul>
         {trending.map((movie) => (
             <li key={movie.id}>
-             {movie.title}
-            </li>
+                <Link to={`/movie/${movie.id}`} state={location}>
+                     {movie.title}
+                 </Link>
+            </li> 
         ))}
       </ul>
     </div>
   );
 }
-
-
 
 
