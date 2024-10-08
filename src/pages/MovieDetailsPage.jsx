@@ -7,6 +7,7 @@ import {
   Outlet,
 } from "react-router-dom";
 import { fetchRequest } from "../themoviedb-api";
+import css from "./MovieDetailsPage.module.css";
 
 export default function MovieDetailsPage() {
   const { movieId } = useParams();
@@ -40,35 +41,47 @@ export default function MovieDetailsPage() {
 
   return (
     <div>
-      <button onClick={handleGoBack}>Go back</button>
+      <button onClick={handleGoBack} className="back-button">
+        ← Go back
+      </button>
 
       {movieDetails && (
-        <>
-          <h1>{movieDetails.title}</h1>
-          <p>{movieDetails.overview}</p>
+        <div className={css.contentdiv}>
           <img
             src={`https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`}
             alt={movieDetails.title}
+            className="movie-poster"
           />
-
-          <nav>
-            <ul>
-              <li>
-                <Link to="cast" state={location.state}>
-                  Cast
-                </Link>
-              </li>
-              <li>
-                <Link to="reviews" state={location.state}>
-                  Reviews
-                </Link>
-              </li>
-            </ul>
-          </nav>
-
-          <Outlet />
-        </>
+          <div className="movie-info">
+            <h1 className="movie-title">{movieDetails.title}</h1>
+            <p>
+              <strong>User Score:</strong> {movieDetails.vote_average * 10}%
+            </p>
+            <h2>Overview</h2>
+            <p>{movieDetails.overview}</p>
+            <h3>Genres</h3>
+            <p>{movieDetails.genres.map((genre) => genre.name).join(", ")}</p>
+          </div>
+        </div>
       )}
+
+      <nav>
+        <h2>Additional information</h2>
+        <ul>
+          <li>
+            <Link to="cast" state={location.state}>
+              Cast
+            </Link>
+          </li>
+          <li>
+            <Link to="reviews" state={location.state}>
+              Reviews
+            </Link>
+          </li>
+        </ul>
+      </nav>
+
+      <Outlet />
     </div>
   );
 }

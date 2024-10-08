@@ -1,0 +1,8 @@
+.details {
+  display: flex;
+}
+
+.contentdiv {
+  display: flex;
+  gap: 10px;
+}
