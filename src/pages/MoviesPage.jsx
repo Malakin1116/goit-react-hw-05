@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { fetchRequest } from "../themoviedb-api";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function MoviesPage() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.query && location.state?.movies) {
+      setQuery(location.state.query);
+      setMovies(location.state.movies);
+    }
+  }, [location.state]);
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -13,6 +22,7 @@ export default function MoviesPage() {
     try {
       const res = await fetchRequest(`search/movie?query=${query}`);
       setMovies(res.data.results);
+      navigate("/movies", { state: { query, movies: res.data.results } });
     } catch (error) {
       console.error("Error searching for movies:", error);
     }
@@ -33,7 +43,12 @@ export default function MoviesPage() {
       <ul>
         {movies.map((movie) => (
           <li key={movie.id}>
-            <Link to={`/movies/${movie.id}`}>{movie.title || movie.name}</Link>
+            <Link
+              to={`/movies/${movie.id}`}
+              state={{ from: "movies", query, movies }}
+            >
+              {movie.title || movie.name}
+            </Link>
           </li>
         ))}
       </ul>

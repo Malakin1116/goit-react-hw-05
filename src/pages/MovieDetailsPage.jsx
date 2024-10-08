@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
-import { useParams, Link, Outlet } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+  Link,
+  Outlet,
+} from "react-router-dom";
 import { fetchRequest } from "../themoviedb-api";
 
 export default function MovieDetailsPage() {
   const { movieId } = useParams();
   const [movieDetails, setMovieDetails] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     async function getMovieDetails() {
@@ -18,8 +26,22 @@ export default function MovieDetailsPage() {
     getMovieDetails();
   }, [movieId]);
 
+  const handleGoBack = () => {
+    if (location.state?.from === "home") {
+      navigate("/");
+    } else if (location.state?.from === "movies") {
+      navigate("/movies", {
+        state: { query: location.state.query, movies: location.state.movies },
+      });
+    } else {
+      navigate("/movies");
+    }
+  };
+
   return (
     <div>
+      <button onClick={handleGoBack}>Go back</button>
+
       {movieDetails && (
         <>
           <h1>{movieDetails.title}</h1>
@@ -28,18 +50,25 @@ export default function MovieDetailsPage() {
             src={`https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`}
             alt={movieDetails.title}
           />
+
+          <nav>
+            <ul>
+              <li>
+                <Link to="cast" state={location.state}>
+                  Cast
+                </Link>
+              </li>
+              <li>
+                <Link to="reviews" state={location.state}>
+                  Reviews
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          <Outlet />
         </>
       )}
-      <p>Additional Information:</p>
-      <ul>
-        <li>
-          <Link to="cast">Cast</Link>
-        </li>
-        <li>
-          <Link to="reviews">Reviews</Link>
-        </li>
-      </ul>
-      <Outlet />
     </div>
   );
 }
