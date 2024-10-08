@@ -31,9 +31,7 @@ export default function MovieDetailsPage() {
     if (location.state?.from === "home") {
       navigate("/");
     } else if (location.state?.from === "movies") {
-      navigate("/movies", {
-        state: { query: location.state.query, movies: location.state.movies },
-      });
+      navigate(`/movies?query=${location.state.query}`);
     } else {
       navigate("/movies");
     }
@@ -41,7 +39,7 @@ export default function MovieDetailsPage() {
 
   return (
     <div>
-      <button onClick={handleGoBack} className="back-button">
+      <button onClick={handleGoBack} className={css.backButton}>
         ← Go back
       </button>
 
@@ -50,12 +48,13 @@ export default function MovieDetailsPage() {
           <img
             src={`https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`}
             alt={movieDetails.title}
-            className="movie-poster"
+            className={css.moviePoster}
           />
-          <div className="movie-info">
-            <h1 className="movie-title">{movieDetails.title}</h1>
+          <div className={css.movieInfo}>
+            <h1 className={css.movieTitle}>{movieDetails.title}</h1>
             <p>
-              <strong>User Score:</strong> {movieDetails.vote_average * 10}%
+              <strong>User Score:</strong>{" "}
+              {(movieDetails.vote_average * 10).toFixed(1)}%
             </p>
             <h2>Overview</h2>
             <p>{movieDetails.overview}</p>

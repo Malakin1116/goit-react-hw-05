@@ -9,11 +9,14 @@ export default function MoviesPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (location.state?.query && location.state?.movies) {
-      setQuery(location.state.query);
-      setMovies(location.state.movies);
+    const params = new URLSearchParams(location.search);
+    const searchQuery = params.get("query");
+
+    if (searchQuery) {
+      setQuery(searchQuery);
+      handleSearchByQuery(searchQuery);
     }
-  }, [location.state]);
+  }, [location.search]);
 
   const handleSearch = async (event) => {
     event.preventDefault();
@@ -22,7 +25,16 @@ export default function MoviesPage() {
     try {
       const res = await fetchRequest(`search/movie?query=${query}`);
       setMovies(res.data.results);
-      navigate("/movies", { state: { query, movies: res.data.results } });
+      navigate(`/movies?query=${query}`);
+    } catch (error) {
+      console.error("Error searching for movies:", error);
+    }
+  };
+
+  const handleSearchByQuery = async (searchQuery) => {
+    try {
+      const res = await fetchRequest(`search/movie?query=${searchQuery}`);
+      setMovies(res.data.results);
     } catch (error) {
       console.error("Error searching for movies:", error);
     }
@@ -43,10 +55,7 @@ export default function MoviesPage() {
       <ul>
         {movies.map((movie) => (
           <li key={movie.id}>
-            <Link
-              to={`/movies/${movie.id}`}
-              state={{ from: "movies", query, movies }}
-            >
+            <Link to={`/movies/${movie.id}`} state={{ from: "movies", query }}>
               {movie.title || movie.name}
             </Link>
           </li>
