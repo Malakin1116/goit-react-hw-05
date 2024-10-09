@@ -7,6 +7,7 @@ export default function MoviesPage() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const searchQuery = searchParams.get("query");
@@ -17,11 +18,14 @@ export default function MoviesPage() {
   }, [searchParams]);
 
   const fetchMovies = async (searchQuery) => {
+    setLoading(true);
     try {
       const res = await fetchRequest(`search/movie?query=${searchQuery}`);
       setMovies(res.data.results);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,11 +50,15 @@ export default function MoviesPage() {
         <button type="submit">Search</button>
       </form>
 
-      <MovieList
-        movies={movies}
-        from="movies"
-        search={searchParams.toString()}
-      />
+      {loading && <p>Loading...</p>}
+
+      {!loading && query && (
+        <MovieList
+          movies={movies}
+          from="movies"
+          search={searchParams.toString()}
+        />
+      )}
     </div>
   );
 }
