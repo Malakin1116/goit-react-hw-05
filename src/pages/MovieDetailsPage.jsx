@@ -28,10 +28,10 @@ export default function MovieDetailsPage() {
   }, [movieId]);
 
   const handleGoBack = () => {
-    if (location.state?.from === "home") {
+    if (location.state?.from === "movies") {
+      navigate(`/movies?${location.state.search}`);
+    } else if (location.state?.from === "home") {
       navigate("/");
-    } else if (location.state?.from === "movies") {
-      navigate(`/movies?query=${location.state.query}`);
     } else {
       navigate("/movies");
     }
